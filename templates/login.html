@@ -1,0 +1,54 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login: Grudger</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.blue-pink.min.css" />
+	<style type="text/css">
+		.center {
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+		}
+		.mdl-layout__content {
+			padding: 24px;
+			flex: none;
+		}
+	</style>
+</head>
+<body>
+	<!-- NavBar -->
+		<div class="mdl-layout mdl-js-layout mdl-color--grey-100 center">
+			<main class="mdl-layout__content">
+				<div class="mdl-card mdl-shadow--6dp">
+					<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+						<h2 class="mdl-card__title-text">Login</h2>
+					</div>
+			  	<div class="mdl-card__supporting-text">
+						<form id="login_form" method="post" action="/login/" accept-charset="UTF-8" role="form">
+							{% csrf_token %}
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+								<input class="mdl-textfield__input" type="text" name="username" />
+								<label class="mdl-textfield__label">Username</label>
+							</div>
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+								<input class="mdl-textfield__input" type="password" name="password" />
+								<label class="mdl-textfield__label">Password</label>
+							</div>
+							<div class="mdl-card__actions mdl-card--border center">
+								<input class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" type="submit" value="Login" />
+								<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+								  SignUp
+								</a>
+							</div>
+						</form>
+				</div>
+			</main>
+		</div>
+    <!-- Footer -->
+    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+</body>
+</html>

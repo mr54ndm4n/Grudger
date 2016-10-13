@@ -29,7 +29,7 @@ def login(request):
             print("Invalid login details: {0}, {1}".format(username, password))
             return HttpResponse('Invalid login' )
     else:
-        return HttpResponse("Login")
+        return render(request, "login.html", {})
 
 @login_required(login_url='/login/')
 def logout(request):
