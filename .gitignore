@@ -1,4 +1,6 @@
 env/
+media/
+grader/migrations
 db.sqlite3
 *.pyc
 local_settings.py
