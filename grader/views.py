@@ -6,24 +6,40 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login/')
 def dashboard(request):
-	return HttpResponse("Hi")
+	user = request.user
+	page = 'dashboard'
+	return render(request, "dashboard.html", {'user':user, 'page': page})
 
 @login_required(login_url='/login/')
 def setting(request):
-	return HttpResponse("Setting")
+	user = request.user
+	page = 'setting'
+	return render(request, "setting.html", {'user':user, 'page': page})
+
 
 @login_required(login_url='/login/')
 def gradebook(request):
-	return HttpResponse("Setting")
+	user = request.user
+	page = 'gradebook'
+	return render(request, "gradebook.html", {'user':user, 'page': page})
+
 
 @login_required(login_url='/login/')
 def syllabus(request):
-	return HttpResponse("Setting")
+	user = request.user
+	page = 'syllabus'
+	return render(request, "syllabus.html", {'user':user, 'page': page})
+
 
 @login_required(login_url='/login/')
 def problem_list(request):
-	return HttpResponse("Setting")
+	user = request.user
+	page = 'problem'
+	return render(request, "problem_list.html", {'user':user, 'page': page})
+
 
 @login_required(login_url='/login/')
 def problem(request):
-	return HttpResponse("Setting")
+	user = request.user
+	page = 'problem'
+	return render(request, "problem.html", {'user':user, 'page': page})

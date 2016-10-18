@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}: Grudger</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.blue-pink.min.css" />
+  <style type="text/css">
+    .nav-menu{
+      color: #6f8591 !important;
+      background-color: #263238;
+    }
+    #{{page}} {
+      background-color: #37474f !important;
+    }
+    #hello-there{
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Grudger</span>
+          <div class="mdl-layout-spacer"></div>
+          <div id="hello-there">Hi, {{user.username}}&nbsp&nbsp</div>
+          <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+            <li class="mdl-menu__item"><a href="/logout">Log out</a></li>
+        </div>
+      </header>
+      <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        <header class="demo-drawer-header">
+<!--           <img src="images/user.jpg" class="demo-avatar"> -->
+        </header>
+        <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+          <a class="mdl-navigation__link nav-menu" id="dashboard" href="/grader"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>&nbsp&nbsp&nbsp Home</a>
+          <a class="mdl-navigation__link nav-menu" id="syllabus" href="/grader/syllabus"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">class</i>&nbsp&nbsp&nbsp Syllabus</a>
+          <a class="mdl-navigation__link nav-menu" id="problem" href="/grader/problemlist"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">toc</i>&nbsp&nbsp&nbsp Problem List</a>
+          <a class="mdl-navigation__link nav-menu" id="gradebook" href="/grader/gradebook"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">collections_bookmark</i>&nbsp&nbsp&nbsp Gradebook</a>
+          <a class="mdl-navigation__link nav-menu" id="setting" href="/grader/setting"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">build</i>&nbsp&nbsp&nbsp Setting</a>
+      </div>
+      <main class="mdl-layout__content mdl-color--grey-100">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+    <script type="text/javascript">
+    </script>
+</body>
+</html>
