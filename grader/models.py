@@ -40,7 +40,10 @@ class Testcase(models.Model):
 	case_output = models.TextField(blank=True, default='')
 
 class Submission(models.Model):
+
 	student = models.ForeignKey(Student)
+	# current = models.BooleanField(default=False)
+	# submit_date = models.DateTimeField()
 	problem = models.ForeignKey(Problem)
 	user_file = models.FileField(storage=FileSystemStorage(location='progfile', base_url='progfile'))
 	user_score = models.PositiveSmallIntegerField(default=0)
@@ -48,8 +51,6 @@ class Submission(models.Model):
 	# T--TTT--, Timeout, ''
 	def __str__(self):
 		return (self.student.nick_name + ' : ' + self.problem.name)
-	class Meta:
-		ordering = ["student"]
 		
 class Lesson(models.Model):
 	_id = models.PositiveSmallIntegerField(primary_key=True)
