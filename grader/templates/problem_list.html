@@ -2,5 +2,43 @@
 {% block title %}Problem List{% endblock %}
 
 {% block content %}
-<h1>Problem List</h1>
+	<h1>Problem List</h1>
+	<div class="mdl-grid">
+		<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--11-col">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th class="mdl-data-table__cell--non-numeric">Title</th>
+					<th>Point</th>
+					<th class="mdl-data-table__cell--non-numeric">Difficulty</th>
+					<th>Result</th>
+					<th>Due Date</th>
+			</tr>
+			</thead>
+			<tbody>
+	            {% for sub_prob in sub_prob_list %}
+	              {% if sub_prob.active %}
+	                <tr>
+	                  <td><a href="/grader/problem/{{sub_prob.problem.pk}}">{{sub_prob.problem.pk}}</a></td>
+	                  <td class="mdl-data-table__cell--non-numeric"><a href="/grader/problem/{{sub_prob.problem.pk}}">{{sub_prob.problem.name}}<a></td>
+	                  <td>{{sub_prob.problem.total_score}}</td>
+	                  <td class="mdl-data-table__cell--non-numeric">{{sub_prob.problem.difficulty}}</td>
+	                  <td style="padding:0px;">{% if sub_prob.submission.result == 'Timeout' %}
+	                        <h4><span class="label label-warning">
+	                      {% elif sub_prob.submission.result == 'Compile Error' %}
+	                        <h4><span class="label label-danger">
+	                      {% elif sub_prob.submission.user_score == sub_prob.submission.problem.total_score%}
+	                        <h4><span class="label label-success">
+	                      {% else %}
+	                        <h4><span class="label label-info">
+	                      {% endif %}
+	                        {{sub_prob.submission.result}}</span></h4>
+	                  </td>
+	                  <td>{{sub_prob.problem.catagories.due}}</td>
+	              </tr>
+	              {% endif %}
+	            {% endfor %}
+	          </tbody>
+		</table>
+	</div>
 {% endblock %}
