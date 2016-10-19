@@ -1,6 +1,58 @@
 {% extends "layout.html" %}
 {% block title %}Syllabus{% endblock %}
 
+{% block head %}
+{% endblock %}
+
 {% block content %}
 <h1>Syllabus</h1>
+<div class="mdl-grid">
+	<div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--11-col mdl-grid">
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in varius quam, sed posuere magna. Donec eu pellentesque erat. Aenean interdum maximus libero, a tempor lectus posuere a. Donec cursus ut sem vel elementum. Ut aliquam, odio ac tempus viverra, magna dolor pulvinar orci, ut commodo erat augue sed nunc. Maecenas tristique massa augue. Donec ut ex eget magna porta hendrerit. Vivamus non sem in lacus laoreet auctor nec interdum dui. Donec lorem arcu, sagittis eget ex et, rutrum porta risus.
+
+		Nam vulputate congue bibendum. Vestibulum non lacus nec justo bibendum porttitor. In sit amet eleifend ex, vitae luctus tortor. Phasellus odio felis, facilisis in tempus accumsan, porttitor a nunc. Nulla convallis, magna nec cursus pretium, massa libero varius mauris, at tristique tortor elit quis tellus. Etiam porttitor tempus lobortis. Nam eros leo, mattis quis feugiat eu, faucibus quis sapien. Sed eget volutpat mauris. Praesent felis erat, fermentum in erat at, tincidunt cursus dui. Cras cursus quis elit a ullamcorper. Nam ac sollicitudin eros. Curabitur non semper lacus.
+	</div>
+</div>
+<div class="mdl-grid">
+	<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--11-col">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th class="mdl-data-table__cell--non-numeric">Lesson</th>
+				<th>File1</th>
+				<th>File2</th>
+				<th>File3</th>
+				<th>File4</th>
+		</tr>
+		</thead>
+		<tbody>
+		  	{% for lesson in lesson_list %}
+		      <tr>
+		        <td>{{lesson.pk}}</td>
+		        <td class="mdl-data-table__cell--non-numeric">{{lesson.name}}</td>
+		        <td>
+		        	{% if lesson.file1 %}
+		        		<a href="{{lesson.file1.url}}" target="_blank"><i class="material-icons download-syllabus">file_download</i></a>
+		        	{% endif %}
+		        </td>
+		        <td>
+			        {% if lesson.file2 %}
+		        		<a href="{{lesson.file2.url}}" target="_blank"><i class="material-icons download-syllabus">file_download</i></a>
+		        	{% endif %}
+		        </td>
+		        <td>
+		        	{% if lesson.file3 %}
+		        		<a href="{{lesson.file3.url}}" target="_blank"><i class="material-icons download-syllabus">file_download</i></a>
+		        	{% endif %}
+				        </td>
+		        <td>
+		            {% if lesson.file4 %}
+		        		<a href="{{lesson.file4.url}}" target="_blank"><i class="material-icons download-syllabus">file_download</i></a>
+		        	{% endif %}
+		        </td>
+		      </tr>
+		    {% endfor %}
+		  </tbody>
+	</table>
+</div>
 {% endblock %}

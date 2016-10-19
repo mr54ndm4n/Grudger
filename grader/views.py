@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.http import HttpResponse
 from .models import Student, Problem, Submission, ProblemCategorie, Lesson
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 # Create your views here.
 
 def basic_info(request):
@@ -41,6 +42,7 @@ def gradebook(request):
 def syllabus(request):
 	data = {'page': 'syllabus'}
 	data.update(basic_info(request))
+	data['lesson_list'] = Lesson.objects.all()
 	print(data)
 	return render(request, "syllabus.html", data)
 
