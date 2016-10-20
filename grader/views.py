@@ -1,11 +1,13 @@
-from django.shortcuts import get_object_or_404, render, render_to_response
-from django.http import HttpResponse
-from .models import Student, Problem, Submission, ProblemCategorie, Lesson
-from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-import time
 import datetime
+import subprocess
+import time
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, render_to_response
+from django.template import RequestContext
 from django.utils import timezone
+from .models import Student, Problem, Submission, ProblemCategorie, Lesson
+from .forms import ProblemForm
 # Create your views here.
 
 def basic_info(request):
@@ -65,12 +67,98 @@ def problem_list(request):
 		print('Active: ' + str(problem.catagories.due >= timezone.now() and problem.catagories.start <= timezone.now()))
 		active = problem.catagories.due >= timezone.now() and problem.catagories.start <= timezone.now()
 		sub_prob.append({'problem': problem, 'submission': ps, 'active': active})
-	return render(request, 'problem_list.html', {'user': user, 'student': student, 'sub_prob_list': sub_prob})
+	return render(request, 'problem_list.html', {'user': user, 'student': student, 'sub_prob_list': sub_prob, 'page': 'problem'})
 
 
 @login_required(login_url='/login/')
-def problem(request):
-	data = {'page': 'problem'}
-	data.update(basic_info(request))
-	print(data)
-	return render(request, "problem.html", data)
+def problem(request, problem_id):
+	user = request.user
+	student = Student.objects.get(user = user)
+	problem = Problem.objects.get(id = problem_id)
+	error_message = ''
+	active = problem.catagories.due >= timezone.now() and problem.catagories.start <= timezone.now()
+	if not active:
+		error_message = 'Now This Problem Is Not Active'
+	try:
+		mysub = Submission.objects.get(student = student, problem = problem)
+	except:
+		mysub = Submission(student = student, problem = problem)
+		create_new = 1
+	timeout = 0
+	if request.method == 'POST' and active == True:
+		form = ProblemForm(request.POST, request.FILES)
+		if form.is_valid():
+			student.score -= mysub.user_score
+			mysub.user_score = 0
+			testcases = problem.testcase_set.all()
+			ufile = request.FILES['user_file']
+			mysub.user_file = ufile
+			mysub.save()
+			print('Compiling: ' + mysub.user_file.name)
+			task0 = subprocess.Popen("gcc progfile/" + mysub.user_file.name + " -o opt")
+			task0.wait(timeout=None)
+			# if compile not error V
+			if task0.returncode == 0: 
+				mysub.result = ''
+				for case in testcases:
+					task1 = subprocess.Popen("opt", stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+					# task1.stdin.write(case.case_input.encode('utf-8'))
+					try:
+						out, err = task1.communicate(input=case.case_input.encode('utf-8'), timeout = 3)
+					# If it's timeout
+					except:
+						print('It\'s Timeout')
+						mysub.result = 'Timeout'
+						mysub.user_score = 0
+						task1.kill()
+						chk_0 = task0.poll()
+						while chk_0 == None:
+							task0.terminate()
+							time.sleep(1)
+							chk_0 = task1.poll()
+						print('Poll0: ->' + str(task0.poll()))
+						chk_1 = task1.poll()
+						while chk_1 == None:
+							task1.terminate()
+							time.sleep(1)
+							chk_1 = task1.poll()
+						print('Poll1: ->' + str(task1.poll()))
+						break
+					print(repr(out.decode('ascii').replace('\r', ''))+'\n'+repr(case.case_output.replace('\r', '')))
+					if(repr(out.decode('ascii').replace('\r', '')) == repr(case.case_output.replace('\r', ''))):
+						mysub.result += 'P '
+						mysub.user_score += problem.score_per_case
+					else:
+						mysub.result +='- '
+					task1.terminate()
+					task1.kill()
+
+				# Killing task_0
+				chk_0 = task0.poll()
+				while chk_0 == None:
+					task0.terminate()
+					time.sleep(1)
+					chk_0 = task0.poll()
+				print('Task0.poll: ' + str(task0.poll()) + '\n')
+				# Killing Task_1
+				chk_1 = task1.poll()
+				while chk_1 == None:
+					task1.terminate()
+					time.sleep(1)
+					chk_1 = task1.poll()
+				print('Task1.poll: ' + str(task1.poll()))
+			# if compile Error
+			else:
+				mysub.result = 'Compile Error'
+				mysub.user_score = 0
+			print(mysub.result+'\n'+str(mysub.user_score)+'/'+str(problem.total_score))
+			student.score += mysub.user_score
+			student.save()
+			mysub.save()
+			return HttpResponseRedirect('/grader/problem/'+problem_id+'/')
+	else:
+		form = ProblemForm()
+		#Remove OPT
+		# task3 = subprocess.Popen("rm -f opt.exe", shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+		# task3.wait(timeout=None)
+	return render(request, 'problem.html', {'user': user, 'problem': problem, 'form': form, 'student': student, 'mysub': mysub, 'page': 'problem'})

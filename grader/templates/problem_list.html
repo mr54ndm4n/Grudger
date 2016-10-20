@@ -2,7 +2,7 @@
 {% block title %}Problem List{% endblock %}
 
 {% block content %}
-<h1>Problem List</h1>
+<h2>Problem List</h2>
 <div class="mdl-grid">
 	<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--11-col">
 		<thead>
@@ -35,11 +35,10 @@
 							<span class="mdl-chip__contact mdl-color--green mdl-color-text--white">S</span>
 						{% else %}
 							<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">..</span>
+							<span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">N</span>
 						{% endif %}
 							<span class="mdl-chip__text">{{sub_prob.submission.result}}</span>
 							</span>
-						</span>
 					</td>
 					<td>{{sub_prob.problem.catagories.due}}</td>
 				</tr>
