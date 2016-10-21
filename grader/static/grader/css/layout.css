@@ -10,6 +10,13 @@ a.nav-menu:hover{
   color: white !important;
   background-color: #00bcd4 !important; 
 }
+a{
+  font-weight: bold;
+  text-decoration: none;
+}
+a.table-link{
+  color: white;
+}
 .demo-drawer-header{
   background-color: #37474f !important;
   padding-top: 20px;

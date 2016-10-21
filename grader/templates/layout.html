@@ -46,7 +46,13 @@
         <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
           <a class="mdl-navigation__link nav-menu" id="dashboard" href="/grader"><i class="menu material-icons" role="presentation">home</i>&nbsp&nbsp&nbsp Home</a>
           <a class="mdl-navigation__link nav-menu" id="syllabus" href="/grader/syllabus"><i class="menu material-icons" role="presentation">class</i>&nbsp&nbsp&nbsp Syllabus</a>
-          <a class="mdl-navigation__link nav-menu" id="problem" href="/grader/problemlist"><i class="menu material-icons" role="presentation">toc</i>&nbsp&nbsp&nbsp Problem List</a>
+          
+          {% if unseen > 0 %}
+          <a class="mdl-navigation__link nav-menu" id="problem" href="/grader/problemlist"><i class="menu material-icons mdl-badge mdl-badge--overlap" data-badge="{{unseen}}">toc</i>&nbsp&nbsp&nbsp Problem List</a>
+          {% else %}
+          <a class="mdl-navigation__link nav-menu" id="problem" href="/grader/problemlist"><i class="menu material-icons">toc</i>&nbsp&nbsp&nbsp Problem List</a>
+          {% endif %}
+
           <a class="mdl-navigation__link nav-menu" id="gradebook" href="/grader/gradebook"><i class="menu material-icons" role="presentation">collections_bookmark</i>&nbsp&nbsp&nbsp Gradebook</a>
           <a class="mdl-navigation__link nav-menu" id="setting" href="/grader/setting"><i class="menu material-icons" role="presentation">build</i>&nbsp&nbsp&nbsp Setting</a>
         </nav>

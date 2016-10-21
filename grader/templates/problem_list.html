@@ -18,30 +18,36 @@
 		<tbody>
 		{% for sub_prob in sub_prob_list %}
 			{% if sub_prob.active %}
-				<tr>
-					<td><a href="/grader/problem/{{sub_prob.problem.pk}}">{{sub_prob.problem.pk}}</a></td>
-					<td class="mdl-data-table__cell--non-numeric"><a href="/grader/problem/{{sub_prob.problem.pk}}">{{sub_prob.problem.name}}<a></td>
-					<td>{{sub_prob.problem.total_score}}</td>
-					<td class="mdl-data-table__cell--non-numeric">{{sub_prob.problem.difficulty}}</td>
-					<td style="padding:0px;">
-						{% if sub_prob.submission.result == 'Timeout' %}
-							<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--orange mdl-color-text--white">T</span>
-						{% elif sub_prob.submission.result == 'Compile Error' %}
-							<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--pink mdl-color-text--white">E</span>
-						{% elif sub_prob.submission.user_score == sub_prob.submission.problem.total_score%}
-							<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--green mdl-color-text--white">S</span>
-						{% else %}
-							<span class="mdl-chip mdl-chip--contact">
-							<span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">N</span>
-						{% endif %}
-							<span class="mdl-chip__text">{{sub_prob.submission.result}}</span>
-							</span>
-					</td>
-					<td>{{sub_prob.problem.catagories.due}}</td>
-				</tr>
+					{% if sub_prob.submission.seen %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td class="mdl-data-table__cell--non-numeric"><a href="/grader/problem/{{sub_prob.problem.pk}}">{{sub_prob.problem.name}}<a></td>
+					{% else %}
+					<tr style="background-color: #90CAF9; color: white;" >
+						<td>{{ forloop.counter }}</td>
+						<td class="mdl-data-table__cell--non-numeric"><a href="/grader/problem/{{sub_prob.problem.pk}}" class="table-link">{{sub_prob.problem.name}}<a></td>
+					{% endif %}
+						<td>{{sub_prob.problem.total_score}}</td>
+						<td class="mdl-data-table__cell--non-numeric">{{sub_prob.problem.difficulty}}</td>
+						<td style="padding:0px;">
+							{% if sub_prob.submission.result == 'Timeout' %}
+								<span class="mdl-chip mdl-chip--contact">
+								<span class="mdl-chip__contact mdl-color--orange mdl-color-text--white">T</span>
+							{% elif sub_prob.submission.result == 'Compile Error' %}
+								<span class="mdl-chip mdl-chip--contact">
+								<span class="mdl-chip__contact mdl-color--pink mdl-color-text--white">E</span>
+							{% elif sub_prob.submission.user_score == sub_prob.submission.problem.total_score%}
+								<span class="mdl-chip mdl-chip--contact">
+								<span class="mdl-chip__contact mdl-color--green mdl-color-text--white">S</span>
+							{% else %}
+								<span class="mdl-chip mdl-chip--contact">
+								<span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">N</span>
+							{% endif %}
+								<span class="mdl-chip__text">{{sub_prob.submission.result}}</span>
+								</span>
+						</td>
+						<td>{{sub_prob.problem.catagories.due}}</td>
+					</tr>
 			{% endif %}
 		{% endfor %}
 		</tbody>

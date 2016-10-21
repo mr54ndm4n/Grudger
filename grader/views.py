@@ -10,27 +10,38 @@ from .models import Student, Problem, Submission, ProblemCategorie, Lesson
 from .forms import ProblemForm, Profile_PicForm
 # Create your views here.
 
-def basic_info(request):
-	user = request.user
+def generate_submission(request):
+	student = Student.objects.get(user = request.user)
+	problem_list = Problem.objects.all()
+	for problem in problem_list:
+		try:
+			ps = Submission.objects.get(student = student, problem = problem)
+		except:
+			ps = Submission(student = student, problem = problem)
+			ps.save()
+
+
+@login_required(login_url='/login/')
+def dashboard(request):
+	data = {'page': 'dashboard'}
+	data['user'] = request.user
 	try:
 		student = Student.objects.get(user = request.user)
 	except:
 		student = Student(user=request.user)
 		student.nick_name = user.username
 		student.save()
-	return {'user':user, 'student':student}
-
-@login_required(login_url='/login/')
-def dashboard(request):
-	data = {'page': 'dashboard'}
-	data.update(basic_info(request))
-	print(data)
+	data['student'] = student
+	generate_submission(request)
+	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
 	return render(request, "dashboard.html", data)
 
 @login_required(login_url='/login/')
 def setting(request):
-	user = request.user
+	data = {'page': 'setting'}
+	data['user'] = request.user
 	student = Student.objects.get(user = request.user)
+	data['student'] = student
 	error_message = ''
 	if request.method == 'POST':
 		if 'profilepic' in request.POST:
@@ -64,17 +75,23 @@ def setting(request):
 					error_message = 'New password do not match'
 			else:
 				error_message = 'Your old password is not correct'
-	form = Profile_PicForm()
-	return render(request, 'setting.html', {'user': user, 'student': student, 'error_message': error_message, 'page': 'setting', 'form': form,})
+	data['form'] = Profile_PicForm()
+	data['error_message'] = error_message
+	generate_submission(request)
+	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
+	return render(request, 'setting.html', data)
 
 
 @login_required(login_url='/login/')
 def gradebook(request):
-	user = request.user
+	data = {'page': 'gradebook'}
+	data['user'] = request.user
 	student = Student.objects.get(user = request.user)
+	data['student'] = student
 	cata_list = ProblemCategorie.objects.all()
 	score_list = []
 	total = 0
+	data['cata_list'] = cata_list
 	print('cata_list')
 	print(cata_list)
 	for cata in cata_list:
@@ -104,44 +121,55 @@ def gradebook(request):
 			score_list.append(int(perc*100))
 			print('Score List: ' + str(score_list))
 			total += ((score_user / score_total)*cata.weight)
-			#print(total)
-	score_list.append(total)
-	print(score_list)
-	return render(request, 'gradebook.html', {'user': user, 'student': student, 'cata_list': cata_list, 'score_list': score_list, 'page': 'gradebook'});
+	data['score_list'] = score_list
+	generate_submission(request)
+	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
+	return render(request, 'gradebook.html', data);
 
 
 @login_required(login_url='/login/')
 def syllabus(request):
 	data = {'page': 'syllabus'}
-	data.update(basic_info(request))
 	data['lesson_list'] = Lesson.objects.all()
-	print(data)
+	data['user'] = request.user
+	try:
+		student = Student.objects.get(user = request.user)
+	except:
+		student = Student(user=request.user)
+		student.nick_name = user.username
+		student.save()
+	data['student'] = student
+	generate_submission(request)
+	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
 	return render(request, "syllabus.html", data)
 
 
 @login_required(login_url='/login/')
 def problem_list(request):
-	user = request.user
+	data = {'page': 'problem'}
+	data['user'] = request.user
 	student = Student.objects.get(user = request.user)
+	data['student'] = student
 	problem_list = Problem.objects.all()
 	sub_prob = []
 	for problem in problem_list:
-		try:
-			ps = Submission.objects.get(student = student, problem = problem)
-		except:
-			ps = Submission(student = student, problem = problem)
-			ps.save()
+		ps = Submission.objects.get(student = student, problem = problem)
 		print('Active: ' + str(problem.catagories.due >= timezone.now() and problem.catagories.start <= timezone.now()))
 		active = problem.catagories.due >= timezone.now() and problem.catagories.start <= timezone.now()
 		sub_prob.append({'problem': problem, 'submission': ps, 'active': active})
-	return render(request, 'problem_list.html', {'user': user, 'student': student, 'sub_prob_list': sub_prob, 'page': 'problem'})
+	data['sub_prob_list'] = sub_prob
+	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
+	return render(request, 'problem_list.html', data)
 
 
 @login_required(login_url='/login/')
 def problem(request, problem_id):
-	user = request.user
-	student = Student.objects.get(user = user)
+	data = {'page': 'problem'}
+	data['user'] = request.user
+	student = Student.objects.get(user = request.user)
+	data['student'] = student
 	problem = Problem.objects.get(id = problem_id)
+	data['problem'] = problem
 	error_message = ''
 	active = problem.catagories.due >= timezone.now() and problem.catagories.start <= timezone.now()
 	if not active:
@@ -151,6 +179,8 @@ def problem(request, problem_id):
 	except:
 		mysub = Submission(student = student, problem = problem)
 		create_new = 1
+	mysub.seen = True
+	data['mysub'] = mysub
 	timeout = 0
 	if request.method == 'POST' and active == True:
 		form = ProblemForm(request.POST, request.FILES)
@@ -224,8 +254,10 @@ def problem(request, problem_id):
 			mysub.save()
 			return HttpResponseRedirect('/grader/problem/'+problem_id+'/')
 	else:
-		form = ProblemForm()
+		data['form'] = ProblemForm()
 		#Remove OPT
 		# task3 = subprocess.Popen("rm -f opt.exe", shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 		# task3.wait(timeout=None)
-	return render(request, 'problem.html', {'user': user, 'problem': problem, 'form': form, 'student': student, 'mysub': mysub, 'page': 'problem'})
+	mysub.save()
+	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
+	return render(request, 'problem.html', data)

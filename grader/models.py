@@ -42,7 +42,7 @@ class Testcase(models.Model):
 class Submission(models.Model):
 
 	student = models.ForeignKey(Student)
-	# current = models.BooleanField(default=False)
+	seen = models.BooleanField(default=False)
 	# submit_date = models.DateTimeField()
 	problem = models.ForeignKey(Problem)
 	user_file = models.FileField(storage=FileSystemStorage(location='progfile', base_url='progfile'))
