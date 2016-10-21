@@ -70,10 +70,44 @@ def setting(request):
 
 @login_required(login_url='/login/')
 def gradebook(request):
-	data = {'page': 'gradebook'}
-	data.update(basic_info(request))
-	print(data)
-	return render(request, "gradebook.html", data)
+	user = request.user
+	student = Student.objects.get(user = request.user)
+	cata_list = ProblemCategorie.objects.all()
+	score_list = []
+	total = 0
+	print('cata_list')
+	print(cata_list)
+	for cata in cata_list:
+		problem_list = Problem.objects.filter(catagories = cata)
+		if not problem_list:
+			print('empty problem_list in ' + cata.name)
+			score_list.append(0)
+			total += 0
+		else:
+			score_user = 0
+			score_total = 0
+			print('Cata: ' + cata.name + '\n-------------------------')
+			for prob in problem_list:
+				try:
+					mysub = Submission.objects.get(student = student, problem = prob)
+				except:
+					mysub = Submission(student = student, problem = prob)
+					mysub.save()
+				score_user += mysub.user_score
+				score_total += prob.total_score
+				print(str(prob) + ' : ' + str(score_user) + ' : ' + str(score_total))
+			try:
+				perc = score_user/float(score_total)
+			except:
+				perc = 0
+			print(perc)
+			score_list.append(int(perc*100))
+			print('Score List: ' + str(score_list))
+			total += ((score_user / score_total)*cata.weight)
+			#print(total)
+	score_list.append(total)
+	print(score_list)
+	return render(request, 'gradebook.html', {'user': user, 'student': student, 'cata_list': cata_list, 'score_list': score_list, 'page': 'gradebook'});
 
 
 @login_required(login_url='/login/')

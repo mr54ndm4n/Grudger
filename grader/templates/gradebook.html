@@ -2,5 +2,45 @@
 {% block title %}Gradebook{% endblock %}
 
 {% block content %}
-<h2>Gradebook</h2>
+	<h2>Gradebook</h2>
+	<div style="width:70% !important; height:70% !important; margin-left:20px;; margin-top: 30px;">
+		<canvas id="canvas" style="width:100% !important; height:100% !important;"></canvas>
+	</div>
+{% endblock %}
+
+{% block script %}
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+	<script type="text/javascript">
+		var cata_list = []
+		var bg_color = []
+		{% for cata in cata_list %}
+			cata_list.push('{{cata.name}}');
+			bg_color.push('#03a9f4');
+		{% endfor %}
+		bg_color.push('#f44336');
+		cata_list.push('Total');
+		var ctx = document.getElementById("canvas");
+		Chart.defaults.global.responsive = true;
+		Chart.defaults.global.legend.display = false;
+		var myChart = new Chart(ctx, {
+		    type: 'bar',
+			data: {
+		        labels: cata_list,
+		        datasets: [{
+					data : {{score_list}},
+					backgroundColor: bg_color,
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero:true
+		                }
+		            }]
+		        }
+		    }
+		});	
+	</script>
 {% endblock %}
