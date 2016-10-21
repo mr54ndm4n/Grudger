@@ -45,7 +45,7 @@
 						{{ form.user_file.help_text }}
 					</p>
 					<p>{{ form.user_file.errors }} {{ form.user_file }} </p>
-					<p><input type="submit" value="Upload" data-toggle="modal" data-target="#myModal" /></p>
+					<p><input class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" id="upload-file" type="submit" value="Upload"/></p>
 				</form>
 				{% endif %}
 			</center>
@@ -69,6 +69,14 @@
 			</div>
 		</div>
 </div>
+  <dialog class="mdl-dialog">
+    <div class="mdl-dialog__content">
+    	<center>
+    		<div class="mdl-spinner mdl-js-spinner is-active"></div>
+    		<div style="font-size: 1.2em; font-weight: bold;">Wait for Upload and Compile..</div>
+    	</center>
+    </div>
+  </dialog>
 	<!-- Wait for Upload and Compiling -->
 <!-- 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	  <div class="modal-dialog" role="document">
@@ -90,4 +98,14 @@
 	    </div>
 	  </div>
 	</div> -->
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var dialog = document.querySelector('dialog');
+    var showModalButton = document.querySelector('#upload-file');
+    showModalButton.addEventListener('click', function() {
+      dialog.showModal();
+    });
+</script>
 {% endblock %}
