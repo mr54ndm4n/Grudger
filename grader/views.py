@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render, render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 from .models import Student, Problem, Submission, ProblemCategorie, Lesson
-from .forms import ProblemForm
+from .forms import ProblemForm, Profile_PicForm
 # Create your views here.
 
 def basic_info(request):
@@ -29,10 +29,43 @@ def dashboard(request):
 
 @login_required(login_url='/login/')
 def setting(request):
-	data = {'page': 'setting'}
-	data.update(basic_info(request))
-	print(data)
-	return render(request, "setting.html", data)
+	user = request.user
+	student = Student.objects.get(user = request.user)
+	error_message = ''
+	if request.method == 'POST':
+		if 'profilepic' in request.POST:
+			form = Profile_PicForm(request.POST, request.FILES)
+			pic = request.FILES['profile_pic']
+			student.profile_pic = pic
+			student.save()
+			print('profilepic')
+		elif 'general' in request.POST:
+			firstname = request.POST.get('firstname', False)
+			lastname = request.POST.get('lastname', False)
+			email = request.POST.get('email', False)
+			nick = request.POST.get('nick', False)
+			user.first_name = firstname
+			user.last_name = lastname
+			user.email = email
+			student.nick_name = nick
+			student.save()
+			user.save()
+			print(firstname + ' ' + lastname + '  ' + email)
+		elif 'password-changed' in request.POST:
+			old = request.POST.get('old-pass', False)
+			new1 = request.POST.get('new-pass1', False)
+			new2 = request.POST.get('new-pass2', False)
+			if user.check_password(old) == True:
+				if new1 == new2:
+					user.set_password(new1)
+					user.save()
+					return HttpResponseRedirect('/login/')
+				else:
+					error_message = 'New password do not match'
+			else:
+				error_message = 'Your old password is not correct'
+	form = Profile_PicForm()
+	return render(request, 'setting.html', {'user': user, 'student': student, 'error_message': error_message, 'page': 'setting', 'form': form,})
 
 
 @login_required(login_url='/login/')

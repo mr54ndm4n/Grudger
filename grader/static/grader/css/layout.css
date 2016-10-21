@@ -30,7 +30,10 @@ i.menu:hover {
 .demo-layout .mdl-layout__header .mdl-layout__drawer-button {
   color: rgba(0, 0, 0, 0.54);
 }
-header{}
 main{
   padding-left: 15px;
+}
+p{
+  font-weight: 500;
+  color: #263238;
 }

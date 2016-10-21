@@ -27,4 +27,4 @@ urlpatterns = [
     url(r'^login/', views.login),
     url(r'^logout/', views.logout),
     url(r'^$', views.home),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

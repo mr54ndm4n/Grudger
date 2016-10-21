@@ -1,6 +1,101 @@
 {% extends "layout.html" %}
+{% load staticfiles %}
 {% block title %}Setting{% endblock %}
 
 {% block content %}
-<h1>Setting</h1>
+<h2>Setting</h2>
+
+	<div class="mdl-grid">
+		<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--10-col" style="margin-bottom: 20px; margin-top: 10px;">
+			<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+				<h2 class="mdl-card__title-text">General Setting</h2>
+			</div>
+			<div class="mdl-card__supporting-text">
+				<form action='/grader/setting/' class="well" method="post">
+					{% csrf_token %}
+					<div class="mdl-grid">
+						<div class="mdl-cell mdl-cell--5-col">
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+								<input class="mdl-textfield__input" type="text" name="new-pass1" value="{{user.username}}" disabled/>
+								<label class="mdl-textfield__label">Username</label>
+								<p>Username can't be changed.</p>
+							</div>
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+								<input class="mdl-textfield__input" type="text" name="nick" value="{{student.nick_name}}"/>
+								<label class="mdl-textfield__label">Nickname</label>
+							</div>
+						</div>
+						<div class="mdl-cell mdl-cell--5-col mdl-cell--1-offset-desktop">
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+								<input class="mdl-textfield__input" type="text" name="firstname" value="{{user.first_name}}"/>
+								<input class="mdl-textfield__input" type="text" name="lastname" value="{{user.last_name}}"/>
+								<label class="mdl-textfield__label">Full Name</label>
+							</div>
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+								<input class="mdl-textfield__input" type="text" name="email" value="{{user.email}}"/>
+								<label class="mdl-textfield__label">Email</label>
+							</div>
+						</div>
+					</div>
+					<input class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" type="submit" value="Submit" name="general"/>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="mdl-grid">
+		<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--5-col" style="margin-bottom: 20px; margin-top: 10px;">
+			<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+				<h2 class="mdl-card__title-text">Change Profile Picture</h2>
+			</div>
+			<div class="mdl-card__supporting-text" style="padding-left:10px;">
+				<form class="mdl-grid" action="/grader/setting/" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="mdl-grid" style="margin-bottom: 20px;">
+						<div class="mdl-cell mdl-cell---col">
+							{% if student.profile_pic %}
+								<img src="{{student.profile_pic.url}}" width="100" height="100" class="img-circle">
+							{% else %}
+								<img src="{% static 'grader/images/avatar.png' %}" width="100" height="100" class="img-circle">
+							{% endif %}
+						</div>
+						<div class="mdl-cell mdl-cell--7-col">
+							<p>{{ form.non_field_errors }}</p>
+							<p style="text-align: left; font-weight: bold;">{{ form.profile_pic.label_tag }} (Ex. Profile.png)
+							{{ form.profile_pic.help_text }}
+							</p>
+							<p>{{ form.profile_pic.errors }} {{ form.profile_pic }} </p>
+						</div>
+					</div>
+					<hr>
+					<input class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" type="submit" value="Submit" name="profilepic"/>
+				</form>
+			</div>
+		</div>
+		<div class="mdl-card mdl-shadow--6dp mdl-cell mdl-cell--5-col" style="margin-bottom: 20px; margin-top: 10px;">
+			<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+				<h2 class="mdl-card__title-text">Change Password</h2>
+			</div>
+			<div class="mdl-card__supporting-text" style="padding-left:10px;">
+				<form class="mdl-grid" action='/grader/setting/' method="post">
+					{% csrf_token %}
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+						<input class="mdl-textfield__input" type="text" name="old-pass" />
+						<label class="mdl-textfield__label">Old Password</label>
+					</div>
+					<hr>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+						<input class="mdl-textfield__input" type="text" name="new-pass1" />
+						<label class="mdl-textfield__label">New Password</label>
+					</div>
+					<br>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo">
+						<input class="mdl-textfield__input" type="text" name="new-pass1" />
+						<label class="mdl-textfield__label">Re-type New Password</label>
+					</div>	
+					<br>				
+					<input class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored" type="submit" value="Submit" name="password-changed"/>
+				</form>
+			</div>		
+		</div>
+	</div>
 {% endblock %}

@@ -13,8 +13,8 @@
       background-color: white !important;
        color: #6f8591 !important;
     }
-  {% block head %}{% endblock %}
   </style>
+  {% block head %}{% endblock %}
 </head>
 <body>
     <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
@@ -57,6 +57,7 @@
     </div>
     <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
     <script type="text/javascript">
+    {% block script %}{% endblock %}
     </script>
 </body>
 </html>
