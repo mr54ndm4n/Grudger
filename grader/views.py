@@ -121,6 +121,7 @@ def gradebook(request):
 			score_list.append(int(perc*100))
 			print('Score List: ' + str(score_list))
 			total += ((score_user / score_total)*cata.weight)
+	score_list.append(total)
 	data['score_list'] = score_list
 	generate_submission(request)
 	data['unseen'] = len(Submission.objects.all().filter(student = student, seen = False))
