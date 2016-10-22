@@ -40,7 +40,8 @@
           {% endif %}
 
           <div class="nav-name">
-            {% if user.first_name and user.last_name %}{{user.first_name}}<br>{{user.last_name}}{% else %}Anonymous{% endif %}
+            {% if user.first_name and user.last_name %}{{user.first_name}}<br>{{user.last_name}}{% else %}Anonymous{% endif %}<br>
+            <span class="mdl-chip score"><span class="mdl-chip__text">Your Score: {{student.score}}</span></span>
           </div>
         </header>
         <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">

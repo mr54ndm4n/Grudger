@@ -6,6 +6,10 @@
   background-color: #263238;
   font-weight: 400;
 }
+.score{
+  color: white;
+  background-color: #4caf50;
+}
 a.nav-menu:hover{
   color: white !important;
   background-color: #00bcd4 !important; 
